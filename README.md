@@ -19,3 +19,8 @@
   - `lng` values must be less than 360: stored as 16 bits.
   - `lat` values must be less than 180: stored as 8 bits.
   - `lngDecimal` and `latDecimal` values must be less than 100: stored as 8 bits each.
+
+**Translation to Coordinates**:
+- All values composing a BlockPlace are stored as unsigned (non-negative) values.
+- When coordinates are passed in they have an offset added to them.
+- When coordinates are passed out they have an offset subtracted from them.
