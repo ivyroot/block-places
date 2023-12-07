@@ -1,66 +1,22 @@
-## Foundry
+# Block Places
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+**Geographic translation utilities**: (lng/lat) <-> (block place id)
 
-Foundry consists of:
+**Author**: ivyroot
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+**Description**:
+- Block Places are a set of ids that can be used to identify locations anywhere on Earth.
+- Each Block Place is a rectangular area whose sides are 1/100th of a degree long.
+- They are stored as Longitude, Latitude pairs encoded in a single number, the Block Place ID.
 
-## Documentation
+**Details**:
+- The Longitude and Latitude values for a Block Place are stored as two parts:
+  - The first gives the whole number, from 0-359 for Longitude and from 0-179 for Latitude.
+  - The second gives the decimal in hundredths of a degree (e.g., 0.00, 0.01, 0.02, 0.03).
+  - Decimals are numbers from 0-99.
 
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
-
-```shell
-$ forge build
-```
-
-### Test
-
-```shell
-$ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+**Bitpacking**:
+- The set of 4 values specifying a Block Place are bitpacked together into a single unique number:
+  - `lng` values must be less than 360: stored as 16 bits.
+  - `lat` values must be less than 180: stored as 8 bits.
+  - `lngDecimal` and `latDecimal` values must be less than 100: stored as 8 bits each.
