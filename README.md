@@ -1,8 +1,8 @@
 # Block Places
 
-**Geographic translation utilities**: (lng/lat) <-> (block place id)
+**Geographic translation utilities for use on the Blockchain**: ( Longitude, Latitude )  <-> ( Block Place Id )
 
-**Author**: ivyroot
+**Author**: Ivyroot
 
 **Description**:
 - Block Places are a set of ids that can be used to identify locations anywhere on Earth.
@@ -11,9 +11,8 @@
 
 **Details**:
 - The Longitude and Latitude values for a Block Place are stored as two parts:
-  - The first gives the whole number, from 0-359 for Longitude and from 0-179 for Latitude.
-  - The second gives the decimal in hundredths of a degree (e.g., 0.00, 0.01, 0.02, 0.03).
-  - Decimals are numbers from 0-99.
+  - The first gives the non-decimal number, from 0-359 for Longitude and from 0-179 for Latitude.
+  - The second gives the decimal in hundredths of a degree (e.g., 0.00, 0.01, 0.02 ... 0.99).
 
 **Bitpacking**:
 - The set of 4 values specifying a Block Place are bitpacked together into a single unique number:
