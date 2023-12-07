@@ -1,0 +1,11 @@
+{
+    "name": "block-places",
+    "version": "0.0.12",
+    "private": false,
+    "scripts": {
+        "test": "jest",
+    },
+    "dependencies": {
+        "maplibre-gl": "^3.6.2"
+    }
+}
