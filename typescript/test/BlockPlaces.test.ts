@@ -35,7 +35,7 @@ describe('BlockPlaces.validateBlockPlace', () => {
 describe('BlockPlaces.enclosingPlaceIdForPoint', () => {
   it('should return the correct PlaceId for a given point', () => {
     const point = new LngLat(100, 50);
-    const expectedPlaceId = 123;
+    const expectedPlaceId = 18790625283;
     expect(BlockPlaces.enclosingPlaceIdForPoint(point)).toBe(expectedPlaceId);
   });
 

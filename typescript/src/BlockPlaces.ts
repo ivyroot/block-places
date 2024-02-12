@@ -14,7 +14,12 @@ export class BlockPlaces {
 
     static isValidBlockPlace(location: BlockPlace): boolean {
         const { lng, lngDecimal, lat, latDecimal } = location;
-        return lng < 360 && lng >= 0 && lngDecimal < 100 && lngDecimal >= 0 && lat < 180 && lat >= 0 && latDecimal < 100 && latDecimal >= 0;
+        return (
+            lng < 360 && lng >= 0
+            && lngDecimal < 100 && lngDecimal >= 0
+            && lat < 180 && lat >= 0
+            && latDecimal < 100 && latDecimal >= 0
+        );
     }
 
     static validateBlockPlace(location: BlockPlace): void {
@@ -46,7 +51,7 @@ export class BlockPlaces {
 
     static blockPlaceFromPlaceId(placeId: PlaceId): BlockPlace | null {
         const bigPlaceId = BigInt(placeId);
-        if  (bigPlaceId < 3 || bigPlaceId > BigInt(24118218127)) {
+        if (bigPlaceId < 3 || bigPlaceId > BigInt(24118218127)) {
             return null;
         }
         const lngSrc = (bigPlaceId >> BigInt(26)) & BigInt(0xFFFF);
