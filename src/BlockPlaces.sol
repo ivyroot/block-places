@@ -1,24 +1,25 @@
 // SPDX-License-Identifier: MIT
 //
-// Block Places
+// BlockPlaces
 //
-//  Geographic translation utilities:   (lng/lat) <-> (block place id)
+//  Geographic translation utilities:   (lng/lat) <-> (BlockPlace id)
 //
-//   Author: ivyroot
+//   Author: https://warpcast.com/ivyroot
 //
-// Block Places are a set of ids that can be used to identify locations anywhere on Earth.
-// Each Block Place is a rectangular area whose sides are 1/100th of a degree long.
-// They are stored as Longitude, Latitude pairs encoded in a single number, the Block Place ID.
+// BlockPlaces are a set of ids that can be used to identify locations anywhere on Earth.
+// Each BlockPlace is a rectangular area whose sides are 1/100th of a degree long.
+// They are stored as Longitude, Latitude pairs encoded in a single number, the BlockPlace ID.
 //
-// The Longitude and Latitude values for a Block Place are stored as two parts.
+// Each Longitude and Latitude value in a BlockPlace is stored as two parts: the degree number and the first 2 digits of its decimal.
 // The first gives the whole number, from 0-359 for Longitude and from 0-179 for Latitude.
 // The second gives the decimal in hundredths of a degree. Ex: 0.00, 0.01, 0.02, 0.03, etc.
+// Longitude and Latitude are translated from the typical range of [-180 to 180] and [-90 to 90] to be only positive numbers.
 // Decimals are numbers from 0-99.
 //
-// The set of 4 values specifying a Block Place are bitpacked together into a single unique number.
-// lng values must be less than 360: stored as 16 bits
-// lat values must be less than 180: stored as 8 bits
-// lngDecimal and latDecimal values must be less than 100: stored as 8 bits
+// The set of 4 values specifying a BlockPlace are bitpacked together into a single unique number.
+// lng values are stored as 16 bits
+// lat values are stored as 8 bits
+// lngDecimal and latDecimal values are stored as 8 bits
 //
 //
 pragma solidity ^0.8.19;
