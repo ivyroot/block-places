@@ -8,7 +8,8 @@ export type BlockPlace = {
     latDecimal: number;
 };
 
-// Map between longitude and latitude in 2 digit precision and a set of Place Id's which are positive integers
+// Map between (Longitude, Latitude) pairs and single PlaceId's
+// PlaceIds store 2 digit precision for longitude and latitude, ie 0.01 degree precision
 export class BlockPlaces {
 
     static isValidBlockPlace(location: BlockPlace): boolean {
