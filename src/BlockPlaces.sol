@@ -66,13 +66,10 @@ library BlockPlaces {
     // Bit packs 4 geo location uints together with the last two bits set to 1
     function placeIdFromLngLat(uint256 lng, uint256 lngDecimal, uint256 lat, uint256 latDecimal) public pure returns (uint256) {
         validateLngLat(lng, lngDecimal, lat, latDecimal);
-
         uint256 uint256_1 = lng << 26; // values < 360. use 16 bits
-        uint256 uint256_2 = lngDecimal << 18; // values < 100. use 8 bits
-        uint256 uint256_3 = lat << 10; // values < 180. use 8 bits
+        uint256 uint256_2 = lat << 18; // values < 180. use 8 bits
+        uint256 uint256_3 = lngDecimal << 10; // values < 100. use 8 bits
         uint256 uint256_4 = latDecimal << 2; // values < 100. use 8 bits
-
-        // Return the bit packed uint256 with the last two bits set to 1 to ensure it's never 0.
         uint256 patternCode = uint256_1 | uint256_2 | uint256_3 | uint256_4;
         return patternCode | 3;  // Ensuring the last two bits are 1
     }
@@ -85,14 +82,14 @@ library BlockPlaces {
         }
 
         // Ensure there is not extra bits in front
-        if (_placeId > 24118218127) {
+        if (_placeId > 24139107727) {
             return(false, 0, 0, 0, 0);
         }
 
         // Shift the values out of the correct positions
         uint16 lngSrc = uint16(_placeId >> 26);
-        uint8 lngDecimalSrc = uint8(_placeId >> 18);
-        uint8 latSrc = uint8(_placeId >> 10);
+        uint8 latSrc = uint8(_placeId >> 18);
+        uint8 lngDecimalSrc = uint8(_placeId >> 10);
         uint8 latDecimalSrc = uint8(_placeId >> 2);
         if (isValidLngLat(lngSrc, lngDecimalSrc, latSrc, latDecimalSrc) > 0) {
             return(false, 0, 0, 0, 0);

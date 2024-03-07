@@ -30,11 +30,11 @@ contract BlockPlacesTest is Test {
     // test location all max values
     function testEncodeLocationMax() public {
         uint testResult = BlockPlaces.placeIdFromLngLat(359, 99, 179, 99);
-        assertEq(testResult, 24118218127);
+        assertEq(testResult, 24139107727);
     }
 
     function testDecodeLocationMax() public {
-        (bool found, uint long, uint longOffset, uint lat, uint latOffset) = BlockPlaces.lngLatFromPlaceId(24118218127);
+        (bool found, uint long, uint longOffset, uint lat, uint latOffset) = BlockPlaces.lngLatFromPlaceId(24139107727);
         assertEq(found, true);
         assertEq(long, 359);
         assertEq(longOffset, 99);
@@ -43,7 +43,7 @@ contract BlockPlacesTest is Test {
     }
 
     function testCannotDecodeAboveLocationMax() public {
-        (bool found,,,,) = BlockPlaces.lngLatFromPlaceId(24118218127 + 1);
+        (bool found,,,,) = BlockPlaces.lngLatFromPlaceId(24139107727 + 1);
         assertEq(found, false);
     }
 
@@ -53,14 +53,22 @@ contract BlockPlacesTest is Test {
         assertEq(found, false);
     }
 
+    // test location with just leftmost component set
+    function testEncodeLocationLongitudeOnly() public {
+        uint testResult = BlockPlaces.placeIdFromLngLat(359, 0, 0, 0);
+        assertEq(testResult, 24092082179);
+        uint16 longitudeComponent = uint16(testResult >> 26);
+        assertEq(longitudeComponent, 359);
+    }
+
     function testEncodeLocation1() public {
         // hollywood sign
         uint testResult = BlockPlaces.placeIdFromLngLat(118, 32, 34, 14);
-        assertEq(testResult, 7927269435);
+        assertEq(testResult, 7927791675);
     }
 
     function testDecodeLocation1() public {
-        (bool found, uint long, uint longOffset, uint lat, uint latOffset) = BlockPlaces.lngLatFromPlaceId(7927269435);
+        (bool found, uint long, uint longOffset, uint lat, uint latOffset) = BlockPlaces.lngLatFromPlaceId(7927791675);
         assertEq(found, true);
         assertEq(long, 118);
         assertEq(longOffset, 32);
