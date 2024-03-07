@@ -42,8 +42,8 @@ export class BlockPlaces {
         this.validateBlockPlace(location);
         const { lng, lngDecimal, lat, latDecimal } = location;
         const uint256_1 = BigInt(lng) << BigInt(26);
-        const uint256_2 = BigInt(lngDecimal) << BigInt(18);
-        const uint256_3 = BigInt(lat) << BigInt(10);
+        const uint256_2 = BigInt(lat) << BigInt(18);
+        const uint256_3 = BigInt(lngDecimal) << BigInt(10);
         const uint256_4 = BigInt(latDecimal) << BigInt(2);
         const patternCode = uint256_1 | uint256_2 | uint256_3 | uint256_4;
         return Number(patternCode | BigInt(3)); // Ensuring the last two bits are 1
@@ -51,12 +51,12 @@ export class BlockPlaces {
 
     static blockPlaceFromPlaceId(placeId: PlaceId): BlockPlace | null {
         const bigPlaceId = BigInt(placeId);
-        if (bigPlaceId < 3 || bigPlaceId > BigInt(24118218127)) {
+        if (bigPlaceId < 3 || bigPlaceId > BigInt(24139107727)) {
             return null;
         }
         const lngSrc = (bigPlaceId >> BigInt(26)) & BigInt(0xFFFF);
-        const lngDecimalSrc = (bigPlaceId >> BigInt(18)) & BigInt(0xFF);
-        const latSrc = (bigPlaceId >> BigInt(10)) & BigInt(0xFF);
+        const latSrc = (bigPlaceId >> BigInt(18)) & BigInt(0xFF);
+        const lngDecimalSrc = (bigPlaceId >> BigInt(10)) & BigInt(0xFF);
         const latDecimalSrc = (bigPlaceId >> BigInt(2)) & BigInt(0xFF);
         const blockPlace = {
             lng: Number(lngSrc),
