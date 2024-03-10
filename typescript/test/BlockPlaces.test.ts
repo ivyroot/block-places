@@ -1,5 +1,5 @@
 import { BlockPlaces, BlockPlace } from '../src/BlockPlaces';
-import { LngLat } from 'maplibre-gl';
+import { LngLat, LngLatBounds } from 'maplibre-gl';
 
 // Describe block for BlockPlaces.isValidBlockPlace
 describe('BlockPlaces.isValidBlockPlace', () => {
@@ -40,4 +40,15 @@ describe('BlockPlaces.enclosingPlaceIdForPoint', () => {
   });
 
   // Add more test cases for different points, including edge cases
+});
+
+describe('getPlaceIdsInBounds', () => {
+  it('should return the correct PlaceIds for a given bounding box', () => {
+    const bounds = new LngLatBounds([[99.995, 49.995], [100.015, 50.015]]);
+    const expectedPlaceIds = [18827182083,
+      18827182087,
+      18827182091,
+    ];
+    expect(BlockPlaces.getPlaceIdsInBounds(bounds)).toEqual(expectedPlaceIds);
+  });
 });

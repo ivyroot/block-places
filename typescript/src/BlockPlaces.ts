@@ -85,4 +85,26 @@ export class BlockPlaces {
         return placeBounds;
     }
 
+    static getPlaceIdsInBounds(bounds: LngLatBounds): PlaceId[] {
+        const points: LngLat[] = [];
+        const startLng = Math.ceil(bounds._sw.lng * 100) / 100;
+        const startLat = Math.ceil(bounds._sw.lat * 100) / 100;
+        const floatLngLength = bounds._ne.lng - bounds._sw.lng;
+        const floatLatLength = bounds._ne.lat - bounds._sw.lat;
+        const lngTotalSteps = Math.floor(floatLngLength * 100);
+        const latTotalSteps = Math.floor(floatLatLength * 100);
+        for (let lng = 0; lng < lngTotalSteps; lng += 1) {
+            const lngPoint = Number((startLng + lng / 100).toFixed(2));
+            for (let lat = 0; lat <= latTotalSteps; lat += 1) {
+                const latPoint = Number((startLat + lat / 100).toFixed(2));
+                points.push(new LngLat(lngPoint, latPoint));
+            }
+        }
+        const placeIds =  points.map((point) => {
+            const checkPoint = new LngLat(point.lng + 0.001, point.lat + 0.001)
+            return this.enclosingPlaceIdForPoint(checkPoint)
+        })
+        return placeIds
+    }
+
 }
