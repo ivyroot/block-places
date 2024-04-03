@@ -28,16 +28,6 @@ export class BlockPlaces {
         }
     }
 
-    static enclosingPlaceIdForPoint(point: LngLat): PlaceId {
-        const lng = Math.floor(point.lng) + 180;
-        const lngDecimal = Math.floor((point.lng - lng + 180) * 100);
-        const lat = Math.floor(point.lat) + 90;
-        const latDecimal = Math.floor((point.lat - lat + 90) * 100);
-        const location = { lng, lngDecimal, lat, latDecimal };
-        this.validateBlockPlace(location);
-        return this.placeIdFromBlockPlace(location);
-    }
-
     static placeIdFromBlockPlace(location: BlockPlace): PlaceId {
         this.validateBlockPlace(location);
         const { lng, lngDecimal, lat, latDecimal } = location;
@@ -70,19 +60,51 @@ export class BlockPlaces {
         return blockPlace;
     }
 
+    static enclosingPlaceIdForPoint(point: LngLat): PlaceId {
+        const lng = Math.floor(point.lng) + 180;
+        const lngDecimal = Math.floor((point.lng - lng + 180) * 100);
+        const lat = Math.floor(point.lat) + 90;
+        const latDecimal = Math.floor((point.lat - lat + 90) * 100);
+        const location = { lng, lngDecimal, lat, latDecimal };
+        this.validateBlockPlace(location);
+        return this.placeIdFromBlockPlace(location);
+    }
+
+    static southwestCornerOfPlaceId(placeId: PlaceId): LngLat | null {
+        const bounds = this.lngLatBoundsFromPlaceId(placeId);
+        if (!bounds) {
+            return null;
+        }
+        return bounds.getSouthWest();
+    }
+
     static lngLatBoundsFromPlaceId(placeId: PlaceId): LngLatBounds | null {
         const blockPlace = this.blockPlaceFromPlaceId(placeId);
         if (!blockPlace) {
             return null;
         }
-        // translate from unsigned integers to signed integerers with
-        // Longitute range -180 to 180 and Latitude range -90 to 90
         const lng = blockPlace.lng + blockPlace.lngDecimal / 100 - 180;
         const roundedLng = Math.round(lng * 100) / 100;
         const lat = blockPlace.lat + blockPlace.latDecimal / 100 - 90;
         const roundedLat = Math.round(lat * 100) / 100;
         const placeBounds = new LngLatBounds(new LngLat(roundedLng, roundedLat), new LngLat(roundedLng + 0.01, roundedLat + 0.01));
         return placeBounds;
+    }
+
+    static sizedLngLatBoundsFromPlaceId(placeId: PlaceId, size: number): LngLatBounds | null {
+        const originPlaceBounds = this.lngLatBoundsFromPlaceId(placeId)
+        if (!originPlaceBounds) {
+            return null
+        }
+        if (!size || size < 1) {
+            throw new Error(`Invalid size ${size}`)
+        }
+        const extraLength = (size - 1) * 0.01
+        const sizedBounds = new LngLatBounds(
+            [originPlaceBounds.getWest(), originPlaceBounds.getSouth() - extraLength], // new southwestern point
+            [originPlaceBounds.getEast() + extraLength, originPlaceBounds.getNorth()]  // new northeastern point
+        )
+        return sizedBounds
     }
 
     static getPlaceIdsInBounds(bounds: LngLatBounds): PlaceId[] {

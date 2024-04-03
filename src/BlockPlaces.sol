@@ -26,12 +26,13 @@ pragma solidity ^0.8.19;
 
 library BlockPlaces {
 
+    error ValMustBeGtZero(int val);
     error LngMustBeUnder360();
     error LngDecimalMustBeUnder100();
     error LatMustBeUnder180();
     error LatDecimalMustBeUnder100();
 
-    function isValidLngLat(uint256 lng, uint256 lngDecimal, uint256 lat, uint256 latDecimal) public pure returns (uint256) {
+    function isValidBlockPlace(uint256 lng, uint256 lngDecimal, uint256 lat, uint256 latDecimal) public pure returns (uint256) {
         if (lng >= 360) {
             return 1;
         }
@@ -47,8 +48,8 @@ library BlockPlaces {
         return 0;
     }
 
-    function validateLngLat(uint256 lng, uint256 lngDecimal, uint256 lat, uint256 latDecimal) public pure {
-        uint isValid = isValidLngLat(lng, lngDecimal, lat, latDecimal);
+    function validateBlockPlace(uint256 lng, uint256 lngDecimal, uint256 lat, uint256 latDecimal) public pure {
+        uint isValid = isValidBlockPlace(lng, lngDecimal, lat, latDecimal);
         if (isValid == 1) {
             revert LngMustBeUnder360();
         }
@@ -63,9 +64,9 @@ library BlockPlaces {
         }
     }
 
-    // Bit packs 4 geo location uints together with the last two bits set to 1
-    function placeIdFromLngLat(uint256 lng, uint256 lngDecimal, uint256 lat, uint256 latDecimal) public pure returns (uint256) {
-        validateLngLat(lng, lngDecimal, lat, latDecimal);
+    // Bit packs 4 geo location uints together into single uint
+    function placeIdFromBlockPlace(uint256 lng, uint256 lngDecimal, uint256 lat, uint256 latDecimal) public pure returns (uint256) {
+        validateBlockPlace(lng, lngDecimal, lat, latDecimal);
         uint256 uint256_1 = lng << 26; // values < 360. use 16 bits
         uint256 uint256_2 = lat << 18; // values < 180. use 8 bits
         uint256 uint256_3 = lngDecimal << 10; // values < 100. use 8 bits
@@ -75,7 +76,7 @@ library BlockPlaces {
     }
 
     // Unpack a bit packed block id into 4 geo location uints
-    function lngLatFromPlaceId(uint256 _placeId) public pure returns (bool isValid, uint lng, uint lngDecimal, uint lat, uint latDecimal) {
+    function blockPlaceFromPlaceId(uint256 _placeId) public pure returns (bool isValid, uint lng, uint lngDecimal, uint lat, uint latDecimal) {
         // Ensure the last two bits are set to 1
         if((_placeId & 3) != 3) {
             return(false, 0, 0, 0, 0);
@@ -91,7 +92,7 @@ library BlockPlaces {
         uint8 latSrc = uint8(_placeId >> 18);
         uint8 lngDecimalSrc = uint8(_placeId >> 10);
         uint8 latDecimalSrc = uint8(_placeId >> 2);
-        if (isValidLngLat(lngSrc, lngDecimalSrc, latSrc, latDecimalSrc) > 0) {
+        if (isValidBlockPlace(lngSrc, lngDecimalSrc, latSrc, latDecimalSrc) > 0) {
             return(false, 0, 0, 0, 0);
         }
 
@@ -102,5 +103,26 @@ library BlockPlaces {
         latDecimal = uint(latDecimalSrc);
     }
 
+    function enclosingPlaceIdForPoint(int lng, uint lngDecimal, int lat, uint latDecimal) public pure returns (uint256) {
+        int paddedLng = lng + 180;
+        int paddedLat = lat + 90;
+        if (paddedLng < 0) {
+            revert ValMustBeGtZero(paddedLng);
+        }
+        if (paddedLat < 0) {
+            revert ValMustBeGtZero(paddedLat);
+        }
+        return placeIdFromBlockPlace(uint(paddedLng), lngDecimal, uint(paddedLat), latDecimal);
+    }
+
+    function southwestCornerOfPlaceId(uint256 placeId) public pure returns (int lng, uint lngDecimal, int lat, uint latDecimal) {
+        (bool isValid, uint lngSrc, uint lngDecimalSrc, uint latSrc, uint latDecimalSrc) = blockPlaceFromPlaceId(placeId);
+        if (!isValid) {
+            return (0, 0, 0, 0);
+        }
+        int paddedLng = int(lngSrc) - 180;
+        int paddedLat = int(latSrc) - 90;
+        return (paddedLng, lngDecimalSrc, paddedLat, latDecimalSrc);
+    }
 
 }
