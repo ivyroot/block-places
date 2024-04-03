@@ -103,7 +103,7 @@ library BlockPlaces {
         latDecimal = uint(latDecimalSrc);
     }
 
-    function enclosingPlaceIdForPoint(int lng, uint lngDecimal, int lat, uint latDecimal) public pure returns (uint256) {
+    function placeIdForLngLat(int lng, uint lngDecimal, int lat, uint latDecimal) public pure returns (uint256) {
         int paddedLng = lng + 180;
         int paddedLat = lat + 90;
         if (paddedLng < 0) {

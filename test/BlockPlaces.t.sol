@@ -27,6 +27,19 @@ contract BlockPlacesTest is Test {
         assertEq(longOffset, 0);
     }
 
+    function testPlaceIdForLngLatInLocation0() public {
+        uint testResult = BlockPlaces.placeIdForLngLat(-180, 0, -90, 0);
+        assertEq(testResult, 3);
+    }
+
+    function testSwCornerLocation0() public {
+        (int long, uint longOffset, int lat, uint latOffset) = BlockPlaces.southwestCornerOfPlaceId(3);
+        assertEq(long, -180);
+        assertEq(longOffset, 0);
+        assertEq(lat, -90);
+        assertEq(latOffset, 0);
+    }
+
     // test location all max values
     function testEncodeLocationMax() public {
         uint testResult = BlockPlaces.placeIdFromBlockPlace(359, 99, 179, 99);
@@ -75,6 +88,20 @@ contract BlockPlacesTest is Test {
         assertEq(lat, 34);
         assertEq(latOffset, 14);
     }
+
+    function testPlaceIdForLngLatInLocation1() public {
+        uint testResult = BlockPlaces.placeIdForLngLat(-62, 32, -56, 14);
+        assertEq(testResult, 7927791675);
+    }
+
+    function testSwCornerLocation1() public {
+        (int long, uint longOffset, int lat, uint latOffset) = BlockPlaces.southwestCornerOfPlaceId(7927791675);
+        assertEq(long, -62);
+        assertEq(longOffset, 32);
+        assertEq(lat, -56);
+        assertEq(latOffset, 14);
+    }
+
 
     function testValidateLat() public {
         vm.expectRevert();
