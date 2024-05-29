@@ -24,6 +24,9 @@
 //
 pragma solidity ^0.8.19;
 
+import "forge-std/console.sol";
+
+
 library BlockPlaces {
 
     error ValMustBeGtZero(int val);
@@ -31,6 +34,8 @@ library BlockPlaces {
     error LngDecimalMustBeUnder100();
     error LatMustBeUnder180();
     error LatDecimalMustBeUnder100();
+    error InvalidPlaceId();
+    error InvalidSquareRegion();
 
     function isValidBlockPlace(uint256 lng, uint256 lngDecimal, uint256 lat, uint256 latDecimal) public pure returns (uint256) {
         if (lng >= 360) {
@@ -123,6 +128,48 @@ library BlockPlaces {
         int paddedLng = int(lngSrc) - 180;
         int paddedLat = int(latSrc) - 90;
         return (paddedLng, lngDecimalSrc, paddedLat, latDecimalSrc);
+    }
+
+    function placeIdsInSquare(uint256 northWestPlaceId, uint256 size) public view returns (uint256[] memory) {
+        (bool isValid, uint lngOrigin, uint lngDecimalOrigin, uint latOrigin, uint latDecimalOrigin) = blockPlaceFromPlaceId(northWestPlaceId);
+        if (!isValid) {
+            revert InvalidPlaceId();
+        }
+        if (size < 1) {
+            revert InvalidSquareRegion();
+        }
+        if ((int(latOrigin) * 100) + int(latDecimalOrigin) - int(size) < 0) {
+            revert InvalidSquareRegion();
+        }
+        if ((lngOrigin * 100) + lngDecimalOrigin + size > 36000) {
+            revert InvalidSquareRegion();
+        }
+        console.log("Origin Place ");
+        console.log(lngOrigin);
+        console.log(lngDecimalOrigin);
+        console.log(latOrigin);
+        console.log(latDecimalOrigin);
+        uint256[] memory placeIds = new uint256[](size * size);
+        uint256 placeId;
+        for (uint i = 0; i < size; i++) {
+            for (uint j = 0; j < size; j++) {
+                uint expandedLng = (lngOrigin * 100) + lngDecimalOrigin + j;
+                uint currLng = expandedLng / 100;
+                uint currLngDecimal = expandedLng % 100;
+                uint expandedLat = (latOrigin * 100) + latDecimalOrigin - i;
+                uint currLat = expandedLat / 100;
+                uint currLatDecimal = expandedLat % 100;
+                console.log("GOT HERE 1");
+                console.log( currLng);
+                console.log( currLngDecimal);
+                console.log( currLat);
+                console.log( currLatDecimal);
+                console.log("GOT HERE 2");
+                placeId = placeIdFromBlockPlace(currLng, currLngDecimal, currLat, currLatDecimal);
+                placeIds[i * size + j] = placeId;
+            }
+        }
+        return placeIds;
     }
 
 }
