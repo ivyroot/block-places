@@ -41,4 +41,18 @@ contract BlockPlacesTest is Test {
         assertUintInArray(4126216243, results);
     }
 
+    function testSquareSize3Location1() public {
+        uint[] memory results = BlockPlaces.placeIdsInSquare(hollywoodSign, 3);
+        assertEq(results.length, 9);
+        assertUintInArray(hollywoodSign, results);
+        assertUintInArray(4126217271, results);
+        assertUintInArray(4126218295, results);
+        assertUintInArray(4126217267, results);
+        assertUintInArray(4126216243, results);
+        assertUintInArray(4126218291, results);
+        assertUintInArray(4126216239, results);
+        assertUintInArray(4126217263, results);
+        assertUintInArray(4126218287, results);
+    }
+
 }
