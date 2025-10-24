@@ -4,7 +4,7 @@
 //
 //  Geographic translation utilities:   (lng/lat) <-> (BlockPlace id)
 //
-//   Author: https://warpcast.com/ivyroot
+//   Author: ivyroot: https://farcaster.xyz/ivyroot -  https://x.com/ivyroot_zk
 //
 // BlockPlaces are a set of ids that can be used to identify locations anywhere on Earth.
 // Each BlockPlace is a rectangular area whose sides are 1/100th of a degree long.
