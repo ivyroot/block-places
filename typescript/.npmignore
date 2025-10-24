@@ -1,0 +1,9 @@
+src/
+test/
+*.test.ts
+jest.config.ts
+babel.config.json
+tsconfig.json
+node_modules/
+.git/
+
