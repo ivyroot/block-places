@@ -146,10 +146,34 @@ export class BlockPlaces {
             }
         }
         const placeIds =  points.map((point) => {
-            const checkPoint = new LngLat(point.lng + 0.001, point.lat + 0.001)
+            const checkPoint = new LngLat(
+                point.lng + 0.001, 
+                point.lat + 0.001
+            )
             return this.enclosingPlaceIdForPoint(checkPoint)
         })
         return placeIds
+    }
+
+    /**
+     * Get all place IDs in a sized block place region.
+     * 
+     * This is a convenience method that combines
+     * sizedLngLatBoundsFromPlaceId and getPlaceIdsInBounds.
+     * 
+     * @param placeId - The northwest corner place ID (origin)
+     * @param size - Number of places in each direction (N×N region)
+     * @returns Array of place IDs in the region
+     */
+    static getPlaceIdsForSizedBlockPlace(
+        placeId: PlaceId, 
+        size: number
+    ): PlaceId[] | null {
+        const bounds = this.sizedLngLatBoundsFromPlaceId(placeId, size)
+        if (!bounds) {
+            return null
+        }
+        return this.getPlaceIdsInBounds(bounds)
     }
 
 }

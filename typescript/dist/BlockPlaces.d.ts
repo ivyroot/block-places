@@ -29,5 +29,16 @@ export declare class BlockPlaces {
      */
     static sizedLngLatBoundsFromPlaceId(placeId: PlaceId, size: number): LngLatBounds | null;
     static getPlaceIdsInBounds(bounds: LngLatBounds): PlaceId[];
+    /**
+     * Get all place IDs in a sized block place region.
+     *
+     * This is a convenience method that combines
+     * sizedLngLatBoundsFromPlaceId and getPlaceIdsInBounds.
+     *
+     * @param placeId - The northwest corner place ID (origin)
+     * @param size - Number of places in each direction (N×N region)
+     * @returns Array of place IDs in the region
+     */
+    static getPlaceIdsForSizedBlockPlace(placeId: PlaceId, size: number): PlaceId[] | null;
 }
 //# sourceMappingURL=BlockPlaces.d.ts.map
