@@ -1,15 +1,16 @@
 {
     "name": "@ivyroot/block-places",
-    "version": "1.1.1",
+    "version": "1.2.0",
     "description": "Map between (Lng,Lat) and PlaceIds",
     "private": false,
-    "type": "module",
-    "main": "./dist/BlockPlaces.js",
-    "types": "./dist/BlockPlaces.d.ts",
+    "main": "./dist/cjs/BlockPlaces.js",
+    "module": "./dist/esm/BlockPlaces.js",
+    "types": "./dist/cjs/BlockPlaces.d.ts",
     "exports": {
         ".": {
-            "types": "./dist/BlockPlaces.d.ts",
-            "import": "./dist/BlockPlaces.js"
+            "types": "./dist/cjs/BlockPlaces.d.ts",
+            "import": "./dist/esm/BlockPlaces.js",
+            "require": "./dist/cjs/BlockPlaces.js"
         }
     },
     "files": [
@@ -18,7 +19,9 @@
         "LICENSE"
     ],
     "scripts": {
-        "build": "tsc",
+        "build": "npm run build:cjs && npm run build:esm",
+        "build:cjs": "tsc",
+        "build:esm": "tsc -p tsconfig.esm.json",
         "prepublishOnly": "npm run build",
         "test": "jest"
     },
