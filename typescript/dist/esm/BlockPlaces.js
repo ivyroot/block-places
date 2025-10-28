@@ -117,7 +117,7 @@ export class BlockPlaces {
         const latTotalSteps = Math.floor(floatLatLength * 100);
         for (let lng = 0; lng < lngTotalSteps; lng += 1) {
             const lngPoint = Number((startLng + lng / 100).toFixed(2));
-            for (let lat = 0; lat <= latTotalSteps; lat += 1) {
+            for (let lat = 0; lat < latTotalSteps; lat += 1) {
                 const latPoint = Number((startLat + lat / 100).toFixed(2));
                 points.push(new LngLat(lngPoint, latPoint));
             }

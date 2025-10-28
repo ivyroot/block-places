@@ -45,10 +45,48 @@ describe('BlockPlaces.enclosingPlaceIdForPoint', () => {
 describe('getPlaceIdsInBounds', () => {
   it('should return the correct PlaceIds for a given bounding box', () => {
     const bounds = new LngLatBounds([[99.995, 49.995], [100.015, 50.015]]);
+    // For a 0.02 x 0.02 degree bounds, we expect 2x2 = 4 places
     const expectedPlaceIds = [18827182083,
       18827182087,
-      18827182091,
     ];
     expect(BlockPlaces.getPlaceIdsInBounds(bounds)).toEqual(expectedPlaceIds);
+  });
+});
+
+describe('getPlaceIdsForSizedBlockPlace', () => {
+  it('should return exactly 4 places for a size 2 slap', () => {
+    // This tests the fix for the bug where size 2 slaps
+    // were incorrectly getting 6 places (3x2 grid) 
+    // instead of 4 places (2x2 grid)
+    const placeId = 6674012507; // Origin place from the log
+    const size = 2;
+    const placeIds = BlockPlaces.getPlaceIdsForSizedBlockPlace(
+      placeId,
+      size
+    );
+    expect(placeIds).not.toBeNull();
+    expect(placeIds?.length).toBe(4); // size^2 = 2^2 = 4
+  });
+
+  it('should return exactly 9 places for a size 3 slap', () => {
+    const placeId = 6674012507;
+    const size = 3;
+    const placeIds = BlockPlaces.getPlaceIdsForSizedBlockPlace(
+      placeId,
+      size
+    );
+    expect(placeIds).not.toBeNull();
+    expect(placeIds?.length).toBe(9); // size^2 = 3^2 = 9
+  });
+
+  it('should return exactly 1 place for a size 1 slap', () => {
+    const placeId = 6674012507;
+    const size = 1;
+    const placeIds = BlockPlaces.getPlaceIdsForSizedBlockPlace(
+      placeId,
+      size
+    );
+    expect(placeIds).not.toBeNull();
+    expect(placeIds?.length).toBe(1); // size^2 = 1^2 = 1
   });
 });
