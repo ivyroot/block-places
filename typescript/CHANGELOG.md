@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.2] - 2025-10-28
+
+### Fixed
+- Fixed floating point precision issue in `getPlaceIdsInBounds()` that caused some place IDs to return incorrect counts
+  - Changed from `Math.floor()` to `Math.round()` when calculating grid steps
+  - This fixes cases where floating point arithmetic produces values like 1.9999... instead of 2.0
+  - Now all size 2 regions correctly return 4 places regardless of geographic location
+
 ## [1.2.1] - 2025-10-28
 
 ### Fixed

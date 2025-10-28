@@ -46,8 +46,11 @@ describe('getPlaceIdsInBounds', () => {
   it('should return the correct PlaceIds for a given bounding box', () => {
     const bounds = new LngLatBounds([[99.995, 49.995], [100.015, 50.015]]);
     // For a 0.02 x 0.02 degree bounds, we expect 2x2 = 4 places
-    const expectedPlaceIds = [18827182083,
+    const expectedPlaceIds = [
+      18827182083,
       18827182087,
+      18827183107,
+      18827183111,
     ];
     expect(BlockPlaces.getPlaceIdsInBounds(bounds)).toEqual(expectedPlaceIds);
   });
@@ -66,6 +69,28 @@ describe('getPlaceIdsForSizedBlockPlace', () => {
     );
     expect(placeIds).not.toBeNull();
     expect(placeIds?.length).toBe(4); // size^2 = 2^2 = 4
+  });
+
+  it('should return exactly 4 places for size 2 with floating point precision issue', () => {
+    // This tests the fix for the floating point precision bug
+    // where some place IDs would return 2 places instead of 4
+    // due to Math.floor(1.999...) = 1 instead of 2
+    const placeId = 7147620627; // Place ID that exposed the rounding bug
+    const size = 2;
+    const placeIds = BlockPlaces.getPlaceIdsForSizedBlockPlace(
+      placeId,
+      size
+    );
+    expect(placeIds).not.toBeNull();
+    expect(placeIds?.length).toBe(4); // size^2 = 2^2 = 4
+    
+    // Verify it returns the correct place IDs
+    expect(placeIds).toEqual([
+      7147620623,
+      7147620627,
+      7147621647,
+      7147621651
+    ]);
   });
 
   it('should return exactly 9 places for a size 3 slap', () => {

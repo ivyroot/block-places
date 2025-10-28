@@ -116,8 +116,8 @@ class BlockPlaces {
         const startLat = Math.ceil(bounds._sw.lat * 100) / 100;
         const floatLngLength = bounds._ne.lng - bounds._sw.lng;
         const floatLatLength = bounds._ne.lat - bounds._sw.lat;
-        const lngTotalSteps = Math.floor(floatLngLength * 100);
-        const latTotalSteps = Math.floor(floatLatLength * 100);
+        const lngTotalSteps = Math.round(floatLngLength * 100);
+        const latTotalSteps = Math.round(floatLatLength * 100);
         for (let lng = 0; lng < lngTotalSteps; lng += 1) {
             const lngPoint = Number((startLng + lng / 100).toFixed(2));
             for (let lat = 0; lat < latTotalSteps; lat += 1) {
