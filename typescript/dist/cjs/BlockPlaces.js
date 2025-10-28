@@ -111,24 +111,27 @@ class BlockPlaces {
         return sizedBounds;
     }
     static getPlaceIdsInBounds(bounds) {
-        const points = [];
-        const startLng = Math.ceil(bounds._sw.lng * 100) / 100;
-        const startLat = Math.ceil(bounds._sw.lat * 100) / 100;
-        const floatLngLength = bounds._ne.lng - bounds._sw.lng;
-        const floatLatLength = bounds._ne.lat - bounds._sw.lat;
-        const lngTotalSteps = Math.round(floatLngLength * 100);
-        const latTotalSteps = Math.round(floatLatLength * 100);
-        for (let lng = 0; lng < lngTotalSteps; lng += 1) {
-            const lngPoint = Number((startLng + lng / 100).toFixed(2));
-            for (let lat = 0; lat < latTotalSteps; lat += 1) {
-                const latPoint = Number((startLat + lat / 100).toFixed(2));
-                points.push(new maplibre_gl_1.LngLat(lngPoint, latPoint));
+        // Work in centi-degrees (0.01° units) to avoid floating point issues
+        // Convert bounds to integers representing hundredths of degrees
+        const swLngCenti = Math.round(bounds._sw.lng * 100);
+        const swLatCenti = Math.round(bounds._sw.lat * 100);
+        const neLngCenti = Math.round(bounds._ne.lng * 100);
+        const neLatCenti = Math.round(bounds._ne.lat * 100);
+        // Calculate grid dimensions in centi-degrees (each step is 1 place)
+        const lngSteps = neLngCenti - swLngCenti;
+        const latSteps = neLatCenti - swLatCenti;
+        const placeIds = [];
+        // Iterate over the grid in integer space
+        for (let lngOffset = 0; lngOffset < lngSteps; lngOffset++) {
+            for (let latOffset = 0; latOffset < latSteps; latOffset++) {
+                // Convert back to degrees for the place corner
+                const lngDegrees = (swLngCenti + lngOffset) / 100;
+                const latDegrees = (swLatCenti + latOffset) / 100;
+                // Sample point inside the place (0.001° = 0.1 centi-degrees)
+                const checkPoint = new maplibre_gl_1.LngLat(lngDegrees + 0.001, latDegrees + 0.001);
+                placeIds.push(this.enclosingPlaceIdForPoint(checkPoint));
             }
         }
-        const placeIds = points.map((point) => {
-            const checkPoint = new maplibre_gl_1.LngLat(point.lng + 0.001, point.lat + 0.001);
-            return this.enclosingPlaceIdForPoint(checkPoint);
-        });
         return placeIds;
     }
     /**

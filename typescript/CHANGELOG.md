@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.3] - 2025-10-28
+
+### Changed
+- **Complete refactor of `getPlaceIdsInBounds()` to use integer arithmetic**
+  - Now works entirely in centi-degrees (hundredths of degrees) as integers
+  - All calculations done in integer space, only converting to floats at the end
+  - **Eliminates ALL floating point precision issues** (no more Math.round/floor/ceil workarounds)
+  - Fixes issue where `Math.ceil()` on coordinates like 40.660000...004 would incorrectly round up
+  - This caused places to be selected NORTH of the origin instead of SOUTH
+  - Much cleaner, more reliable, and mathematically correct implementation
+
 ## [1.2.2] - 2025-10-28
 
 ### Fixed
